@@ -2,13 +2,13 @@ package com.intellum.neeman.impl;
 
 import android.os.Bundle;
 
+import com.intellum.neeman.NativeWebFragment;
 import com.intellum.neeman.NeemanWebViewClient;
-import com.intellum.neeman.OkHttpWebFragment;
 
 /**
  * Created by arsent on 2016-05-31.
  */
-public class DefaultWebFragment extends OkHttpWebFragment {
+public class DefaultWebFragment extends NativeWebFragment {
 
     public static DefaultWebFragment newInstance(String url) {
         Bundle args = new Bundle();
