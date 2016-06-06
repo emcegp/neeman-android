@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0'
+    }
+}
+
 apply plugin: 'com.android.library'
 
 android {
@@ -16,11 +26,14 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     final OKHTTP_VERSION = '3.3.1'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
 
