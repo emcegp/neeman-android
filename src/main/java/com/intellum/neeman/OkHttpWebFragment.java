@@ -43,6 +43,7 @@ public abstract class OkHttpWebFragment extends WebFragment implements Callback 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 vWebView.loadData(responseString, "text/html; charset=utf-8", "UTF-8");
             }
         });

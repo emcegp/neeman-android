@@ -27,8 +27,7 @@ public abstract class WebFragment extends Fragment implements IWebFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.default_web_fragment, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.default_web_fragment, container, false);
     }
 
     @Override
