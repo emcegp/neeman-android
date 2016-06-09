@@ -7,14 +7,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 
-public abstract class WebFragment extends Fragment implements IWebFragment{
+import java.io.InputStream;
+
+public abstract class NeemanWebFragment extends Fragment implements IWebFragment, NeemanPageListener{
+
+    public static final String DEFAULT_CSS_FILE = "main.css";
+
 
     public static final String TAG = "WebFragment";
     public static final String URL_KEY = "URL";
-
+    public NeemanPageListener listener;
 
     WebView vWebView;
+    ProgressBar vProgress;
 
     protected String mUrl;
 
@@ -34,6 +41,8 @@ public abstract class WebFragment extends Fragment implements IWebFragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vWebView = (WebView) view.findViewById(R.id.webview);
+        vProgress = (ProgressBar) view.findViewById(R.id.progress_bar);
+
         setupWebView();
         loadContent();
     }
@@ -47,9 +56,17 @@ public abstract class WebFragment extends Fragment implements IWebFragment{
     }
 
     protected void setupWebView(){
-        vWebView.setWebViewClient(getWebClient());
+        NeemanWebViewClient client = getWebClient();
+        if (client != null) {
+            client.setListener(this);
+            vWebView.setWebViewClient(client);
+        }
         vWebView.getSettings().setJavaScriptEnabled(true);
         vWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+    }
+
+    public void setAdapter(NeemanPageListener listener){
+        this.listener = listener;
     }
 
     public void addFragment(Fragment fragment){
@@ -60,5 +77,39 @@ public abstract class WebFragment extends Fragment implements IWebFragment{
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .addToBackStack("")
                 .commit();
+    }
+
+    @Override
+    public void onPageFinished() {
+        if (vProgress != null){
+            vProgress.setVisibility(View.GONE);
+            vWebView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPageStarted() {
+        if (vProgress != null){
+            vProgress.setVisibility(View.VISIBLE);
+            vWebView.setVisibility(View.GONE);
+        }
+    }
+
+    public String getCSSContent(){
+        return getCSSContent(DEFAULT_CSS_FILE);
+    }
+
+    public String getCSSContent(String cssFileName) {
+        try {
+            InputStream inputStream = getResources().getAssets().open(cssFileName);
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            inputStream.close();
+            return new String(buffer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

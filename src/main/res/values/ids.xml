@@ -2,4 +2,5 @@
 <resources>
     <item name="web_fragment_container" type="id"/>
     <item name="webview" type="id"/>
+    <item name="progress_bar" type="id"/>
 </resources>
