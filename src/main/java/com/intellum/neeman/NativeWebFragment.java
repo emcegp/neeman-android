@@ -10,5 +10,6 @@ public abstract class NativeWebFragment extends NeemanWebFragment {
         String url = getUrl();
         Log.d(TAG, "Loading : " + url);
         vWebView.loadUrl(url);
+
     }
 }

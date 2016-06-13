@@ -24,7 +24,7 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        boolean shouldOverride = !view.getOriginalUrl().equals(url);
+        boolean shouldOverride = view.getOriginalUrl() != null && !view.getOriginalUrl().equals(url);
         if (shouldOverride) {
             getWebFragment().addWebFragment(url);
         }

@@ -73,7 +73,7 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
         getActivity().
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.web_fragment_container, fragment, "")
+                .add(R.id.web_fragment_container, fragment, "")
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .addToBackStack("")
                 .commit();
@@ -81,18 +81,35 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
 
     @Override
     public void onPageFinished() {
-        if (vProgress != null){
-            vProgress.setVisibility(View.GONE);
-            vWebView.setVisibility(View.VISIBLE);
-        }
+        setWebViewVisible(true);
+        setProgressVisible(false);
+        populateTitle();
     }
 
     @Override
     public void onPageStarted() {
-        if (vProgress != null){
-            vProgress.setVisibility(View.VISIBLE);
+        setWebViewVisible(false);
+        setProgressVisible(true);
+    }
+
+    protected void setWebViewVisible(boolean isVisible){
+        if (isVisible){
+            vWebView.setVisibility(View.VISIBLE);
+        }else{
             vWebView.setVisibility(View.GONE);
         }
+    }
+
+    protected void setProgressVisible(boolean isVisible){
+        if (isVisible){
+            vProgress.setVisibility(View.VISIBLE);
+        }else{
+            vProgress.setVisibility(View.GONE);
+        }
+    }
+
+    protected void populateTitle(){
+        getActivity().setTitle(vWebView.getTitle());
     }
 
     public String getCSSContent(){

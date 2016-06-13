@@ -1,5 +1,6 @@
 package com.intellum.neeman.impl;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.intellum.neeman.NativeWebFragment;
@@ -20,8 +21,9 @@ public class DefaultWebFragment extends NativeWebFragment {
 
     @Override
     public void addWebFragment(String url) {
-        DefaultWebFragment webFragment = DefaultWebFragment.newInstance(url);
-        addFragment(webFragment);
+        Intent intent = new Intent(getActivity(), NeemanWebActivity.class);
+        intent.putExtra("url", url);
+        getActivity().startActivity(intent);
     }
 
     @Override
