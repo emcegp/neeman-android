@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
@@ -50,33 +51,41 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     public String getUrl() {
         return mUrl;
     }
+    public String getCookies() {
+        return null;
+    }
 
     public void setUrl(String url) {
         this.mUrl = url;
     }
 
     protected void setupWebView(){
+        setupWebviewClient();
+        setupWebviewSettings();
+        setupWebviewCookies();
+    }
+
+    private void setupWebviewClient(){
         NeemanWebViewClient client = getWebClient();
         if (client != null) {
             client.setListener(this);
             vWebView.setWebViewClient(client);
         }
+    }
+
+    private void setupWebviewSettings(){
         vWebView.getSettings().setJavaScriptEnabled(true);
         vWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
     }
 
-    public void setAdapter(NeemanPageListener listener){
-        this.listener = listener;
-    }
-
-    public void addFragment(Fragment fragment){
-        getActivity().
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.web_fragment_container, fragment, "")
-                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                .addToBackStack("")
-                .commit();
+    private void setupWebviewCookies(){
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        String cookies = getCookies();
+        if (cookies != null && !cookies.isEmpty()){
+            cookieManager.setCookie("intellumgoals.com", cookies);
+        }
     }
 
     @Override
