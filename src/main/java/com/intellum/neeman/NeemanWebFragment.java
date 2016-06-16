@@ -84,7 +84,7 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
         cookieManager.setAcceptCookie(true);
         String cookies = getCookies();
         if (cookies != null && !cookies.isEmpty()){
-            cookieManager.setCookie("intellumgoals.com", cookies);
+            cookieManager.setCookie("tribesocial.com", cookies);
         }
     }
 
@@ -118,7 +118,9 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     }
 
     protected void populateTitle(){
-        getActivity().setTitle(vWebView.getTitle());
+        if (isAdded()) {
+            getActivity().setTitle(vWebView.getTitle());
+        }
     }
 
     public String getCSSContent(){
