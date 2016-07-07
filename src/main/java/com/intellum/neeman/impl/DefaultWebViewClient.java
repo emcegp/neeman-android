@@ -4,10 +4,13 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.ValueCallback;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
 import com.intellum.neeman.NeemanWebFragment;
 import com.intellum.neeman.NeemanWebViewClient;
+import com.intellum.neeman.cache.CacheUtils;
 
 /**
  * Created by arsent on 2016-06-02.
@@ -31,10 +34,12 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
         return shouldOverride;
     }
 
+    private long startTime;
+
     @Override
     public void onPageFinished(WebView view, String url) {
         Log.d(TAG, "onPageFinished: " + url);
-
+        Log.d(TAG, "PAGE LOAD: " + (System.currentTimeMillis() - startTime));
         injectCss(view, DEFAULT_CSS_FILE);
     }
 
@@ -42,7 +47,19 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
         Log.d(TAG, "onPageStarted: " + url);
+        startTime = System.currentTimeMillis();
         notifyStarted();
+    }
+
+    @Override
+    public void onLoadResource(WebView view, String url) {
+        super.onLoadResource(view, url);
+        Log.d(TAG, "Loading Resource: " + url);
+    }
+
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        return CacheUtils.getInstance().load(request.getUrl());
     }
 
     private void notifyStarted(){

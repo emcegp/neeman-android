@@ -7,10 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.intellum.neeman.cache.CacheEntry;
+import com.intellum.neeman.cache.CacheUtils;
+
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class NeemanWebFragment extends Fragment implements IWebFragment, NeemanPageListener{
 
@@ -29,6 +35,8 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CacheUtils.newInstance(getContext());
+
         //TODO: throw exception if there is no url in arguments
         setUrl(getArguments().getString(URL_KEY));
     }
@@ -51,6 +59,7 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     public String getUrl() {
         return mUrl;
     }
+
     public String getCookies() {
         return null;
     }
@@ -59,10 +68,15 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
         this.mUrl = url;
     }
 
+    public List<CacheEntry> getCacheEntries(){
+        return Collections.EMPTY_LIST;
+    };
+
     protected void setupWebView(){
         setupWebviewClient();
         setupWebviewSettings();
         setupWebviewCookies();
+        setupWebviewCache();
     }
 
     private void setupWebviewClient(){
@@ -76,7 +90,8 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     private void setupWebviewSettings(){
         vWebView.getSettings().setJavaScriptEnabled(true);
         vWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-
+        vWebView.setWebContentsDebuggingEnabled(true);
+        vWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
     }
 
     private void setupWebviewCookies(){
@@ -86,6 +101,17 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
         if (cookies != null && !cookies.isEmpty()){
             cookieManager.setCookie("tribesocial.com", cookies);
         }
+    }
+
+    protected void setupWebviewCache(){
+        List<CacheEntry> entries = getCacheEntries();
+        for (CacheEntry entry: entries) {
+            addToCache(entry);
+        }
+    }
+
+    public void addToCache(CacheEntry entry){
+        CacheUtils.getInstance().register(entry);
     }
 
     @Override
