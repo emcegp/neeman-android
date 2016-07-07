@@ -20,6 +20,7 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
     public static final String TAG = "WebViewClient";
     //TODO: abstract out
     public static final String DEFAULT_CSS_FILE = "main.css";
+    private long startTime;
 
     public DefaultWebViewClient(NeemanWebFragment webFragment) {
         super(webFragment);
@@ -33,8 +34,6 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
         }
         return shouldOverride;
     }
-
-    private long startTime;
 
     @Override
     public void onPageFinished(WebView view, String url) {
@@ -59,7 +58,8 @@ public class DefaultWebViewClient extends NeemanWebViewClient {
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        return CacheUtils.getInstance().load(request.getUrl());
+        WebResourceResponse response = CacheUtils.getInstance().load(request.getUrl());
+        return response;
     }
 
     private void notifyStarted(){

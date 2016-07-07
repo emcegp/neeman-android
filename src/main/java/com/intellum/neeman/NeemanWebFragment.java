@@ -27,8 +27,8 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
     public static final String URL_KEY = "URL";
     public NeemanPageListener listener;
 
-    WebView vWebView;
-    ProgressBar vProgress;
+    protected WebView vWebView;
+    protected ProgressBar vProgress;
 
     protected String mUrl;
 
@@ -92,6 +92,13 @@ public abstract class NeemanWebFragment extends Fragment implements IWebFragment
         vWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         vWebView.setWebContentsDebuggingEnabled(true);
         vWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        vWebView.getSettings().setAppCacheEnabled(true);
+        // Set cache size to 8 mb by default. should be more than enough
+        vWebView.getSettings().setAppCacheMaxSize(1024*1024*8);
+        String appCachePath = getContext().getApplicationContext().getCacheDir().getAbsolutePath();
+        vWebView.getSettings().setAppCachePath(appCachePath);
+        vWebView.getSettings().setAllowFileAccess(true);
+        vWebView.getSettings().setJavaScriptEnabled(true);
     }
 
     private void setupWebviewCookies(){

@@ -7,7 +7,6 @@ import android.webkit.WebResourceResponse;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,7 +91,7 @@ public class CacheUtils {
     }
 
     private File getCachedFile(CacheEntry entry) {
-        return new File(this.rootDir.getPath() + File.separator + entry.getName());
+        return new File(this.rootDir.getPath() + File.separator + entry.getFileName());
     }
 
     private boolean isCachedFileExpired(File file, CacheEntry entry) {
@@ -103,10 +102,10 @@ public class CacheUtils {
     private WebResourceResponse newWebResourceResponse(CacheEntry entry, File file) {
         try {
             return new WebResourceResponse(entry.getMimeType(), entry.getEncoding(), new FileInputStream(file));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Error loading cached file: " + file.getPath() + " : "
-                    + e.getMessage(), e);
+        } catch (IOException e) {
+            Log.e(TAG, "Error loading cached file: " + file.getPath(), e);
         }
+
         return null;
     }
 
@@ -117,8 +116,7 @@ public class CacheUtils {
         URLConnection urlConnection = urlObj.openConnection();
         InputStream urlInput = urlConnection.getInputStream();
 
-        FileOutputStream fileOutputStream =
-                this.context.openFileOutput(cacheEntry.getName(), Context.MODE_PRIVATE);
+        FileOutputStream fileOutputStream = context.openFileOutput(cacheEntry.getFileName(), Context.MODE_PRIVATE);
 
         int data = urlInput.read();
         while (data != -1) {
@@ -128,6 +126,6 @@ public class CacheUtils {
 
         urlInput.close();
         fileOutputStream.close();
-        Log.d(TAG, "Cache file: " + cacheEntry.getName() + " stored. ");
+        Log.d(TAG, "Cache file: " + cacheEntry.getFileName() + " stored. ");
     }
 }
